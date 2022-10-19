@@ -40,7 +40,7 @@ CREATE TABLE $tableScans (
 
 // inserting to db
 
-  Future<Scan> create(Scan scan) async {
+  Future<Scan> insert(Scan scan) async {
     final db = await instance.database;
     final id = await db.insert(tableScans, scan.toJson());
     return scan.copy(id: id);
@@ -70,11 +70,14 @@ CREATE TABLE $tableScans (
   Future<List<Scan>> readAllScans() async {
     final db = await instance.database;
 
-    final orderBy = '${ScanFields.time} ASC';
+    final orderBy = '${ScanFields.time} DESC';
 
     final result = await db.query(tableScans, orderBy: orderBy);
 
-    return result.map((json) => Scan.fromJson(json)).toList();
+    List<Scan> list = result.map((json) {
+      return Scan.fromJson(json);
+    }).toList();
+    return list;
   }
 
   Future close() async {

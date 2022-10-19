@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_app/db/result_database.dart';
+import 'package:qr_app/screens/saved_items_list.dart';
+import 'package:qr_app/utils/custom_colors.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:flutter/services.dart';
 import 'package:qr_app/model/result.dart';
@@ -11,15 +13,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String result = "QR Scanner";
   Future _scanQR() async {
     var cameraStatus = await Permission.camera.status;
     if (cameraStatus.isGranted) {
       try {
         String? cameraScanResult = await scanner.scan();
-        setState(() {
-          result = cameraScanResult ??'';
-        });
+        saveResult(cameraScanResult);
       } on PlatformException catch (e) {
         print(e);
       }
@@ -29,9 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (isGrant.isGranted) {
         try {
           String? cameraScanResult = await scanner.scan();
-          setState(() {
-            result = cameraScanResult!;
-          });
+          saveResult(cameraScanResult);
         } on PlatformException catch (e) {
           print(e);
         }
@@ -39,48 +36,90 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future saveResult() async {
-    final scan = Scan(
-      result: result,
-      createdTime: DateTime.now(),
-    );
-
-    await ScansDatabase.instance.create(scan);
-
-    var resultData = await ScansDatabase.instance.readAllScans();
-    print(resultData.map((e) => e.result));
+  Future saveResult(String? cameraScanResult) async {
+    if (cameraScanResult != null && cameraScanResult.trim().isNotEmpty) {
+      final scan = Scan(
+        result: cameraScanResult,
+        createdTime: DateTime.now(),
+      );
+      var scaffoldMessenger = ScaffoldMessenger.of(context);
+      await ScansDatabase.instance.insert(scan);
+      scaffoldMessenger.showSnackBar(const SnackBar(
+        content: Text('Scan Success'),
+        backgroundColor: ColorCustom.colorPrimary,
+        duration: Duration(milliseconds: 1000),
+      ));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(result), // Here the scanned result will be shown
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Scan QR',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
-      floatingActionButton: Row(
-        children: [
-          FloatingActionButton.extended(
-              icon: const Icon(Icons.camera_alt),
-              onPressed: () {
-                _scanQR(); // calling a function when user click on button
-              },
-              label: const Text("Scan")),
-          SizedBox(
-            width: 10.0,
-          ),
-          FloatingActionButton.extended(
-              icon: const Icon(Icons.save),
-              onPressed: () {
-                saveResult(); // calling a function when user click on button
-              },
-              label: const Text("Save")),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: getScannerBody(),
     );
   }
-  
 
+  getScannerBody() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+            child: Center(
+          child: Image.asset(
+            'assets/images/qr_img.png',
+            width: 200,
+            height: 200,
+            fit: BoxFit.contain,
+          ),
+        )),
+        Container(
+          height: 100,
+          decoration: const BoxDecoration(
+            color: ColorCustom.darkBlue,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            ),
+          ),
+          child: Row(children: [
+            Expanded(
+              child: IconButton(
+                  onPressed: () {
+                    _scanQR();
+                  },
+                  icon: Image.asset(
+                    "assets/images/qr_icon.png",
+                    color: Colors.white,
+                    fit: BoxFit.contain,
+                  )),
+            ),
+            Expanded(
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => const ScanResultScreen(),
+                      ),
+                    );
+                  },
+                  icon: Image.asset(
+                    "assets/images/list_icon.png",
+                    color: Colors.white,
+                    fit: BoxFit.contain,
+                  )),
+            ),
+          ]),
+        )
+      ],
+    );
+  }
 }
  // FutureBuilder(builder: ((context, snapshot) {
           //   var data = snapshot.data as List<Scan> ;
