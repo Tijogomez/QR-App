@@ -39,6 +39,9 @@ dependencies:
   qr_flutter:
   qrscan: ^0.3.3
   permission_handler:
+  sqflite: ^2.1.0+1
+  path_provider: ^2.0.11
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
