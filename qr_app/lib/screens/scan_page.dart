@@ -18,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
       try {
         String? cameraScanResult = await scanner.scan();
         setState(() {
-          result = cameraScanResult!;
+          result = cameraScanResult ??'';
         });
       } on PlatformException catch (e) {
         print(e);
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await ScansDatabase.instance.create(scan);
 
     var resultData = await ScansDatabase.instance.readAllScans();
-    print(resultData);
+    print(resultData.map((e) => e.result));
   }
 
   @override
@@ -79,4 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+  
+
 }
+ // FutureBuilder(builder: ((context, snapshot) {
+          //   var data = snapshot.data as List<Scan> ;
+          //   return ListView.builder(itemCount: data.length ,itemBuilder: ((context, index) => Text(data[index].result)));
+          // }))
