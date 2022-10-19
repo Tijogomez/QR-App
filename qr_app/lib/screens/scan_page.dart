@@ -3,6 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_app/db/result_database.dart';
 import 'package:qr_app/screens/saved_items_list.dart';
 import 'package:qr_app/utils/custom_colors.dart';
+import 'package:qr_app/utils/custom_themes.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:flutter/services.dart';
 import 'package:qr_app/model/result.dart';
@@ -44,10 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       var scaffoldMessenger = ScaffoldMessenger.of(context);
       await ScansDatabase.instance.insert(scan);
-      scaffoldMessenger.showSnackBar(const SnackBar(
-        content: Text('Scan Success'),
+      scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+          'Scan Success - ${cameraScanResult} ',
+          style: CustomThemes.getNormalStyle(size: 20.0),
+        ),
         backgroundColor: ColorCustom.colorPrimary,
-        duration: Duration(milliseconds: 1000),
+        duration: Duration(milliseconds: 2000),
       ));
     }
   }
@@ -72,11 +76,16 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Expanded(
             child: Center(
-          child: Image.asset(
-            'assets/images/qr_img.png',
-            width: 200,
-            height: 200,
-            fit: BoxFit.contain,
+          child: GestureDetector(
+            onTap: () {
+              _scanQR();
+            },
+            child: Image.asset(
+              'assets/images/qr_img.png',
+              width: 200,
+              height: 200,
+              fit: BoxFit.contain,
+            ),
           ),
         )),
         Container(
@@ -105,7 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (BuildContext context) => const ScanResultScreen(),
+                        builder: (BuildContext context) =>
+                            const ScanResultScreen(),
                       ),
                     );
                   },

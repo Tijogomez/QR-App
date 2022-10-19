@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:qr_app/model/result.dart';
 import 'package:qr_app/utils/custom_themes.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_app/utils/custom_widgets.dart';
 import '../db/result_database.dart';
 
 class ScanResultScreen extends StatefulWidget {
@@ -60,25 +61,42 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
       return Center(
           child: Text('List empty...', style: CustomThemes.getBoldStyle()));
     } else {
-      return ListView.builder(
+      return ListView.separated(
+          separatorBuilder: (context, index) =>
+              Divider(height: 1, thickness: 5),
           itemCount: data.length,
           itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  Text('${index + 1}. ',
-                      style: CustomThemes.getNormalStyle(size: 16.0)),
-                  Text(
-                    '${DateFormat('MM/dd/yy hh:mm aa').format(data[index].createdTime)} - ',
-                    style: CustomThemes.getNormalStyle(size: 16.0),
-                  ),
-                  Expanded(
-                      child: Text(
-                    '${data[index].result} ',
-                    style: CustomThemes.getBoldStyle(size: 16.0),
-                  )),
-                ],
+            return GestureDetector(
+              onLongPress: () {
+                CustomWidget.showPermissionAlertDialog(
+                    context: context,
+                    message:
+                        'Are you sure want to delete this entry ${data[index].result}',
+                    negativePositiveMessage: 'Cancel',
+                    positiveTap: () async {
+                      await ScansDatabase.instance.deleteItem(data[index].id);
+                      setState(() {});
+                    },
+                    positiveButtonMessage: 'Delete',
+                    title: 'Delete');
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                child: Row(
+                  children: [
+                    Text('${index + 1}. ',
+                        style: CustomThemes.getNormalStyle(size: 16.0)),
+                    Text(
+                      '${DateFormat('MM/dd/yy hh:mm aa').format(data[index].createdTime)} - ',
+                      style: CustomThemes.getNormalStyle(size: 16.0),
+                    ),
+                    Expanded(
+                        child: Text(
+                      '${data[index].result} ',
+                      style: CustomThemes.getBoldStyle(size: 16.0),
+                    )),
+                  ],
+                ),
               ),
             );
           });

@@ -34,12 +34,13 @@ class _SplashUIPageState extends State<SplashUIPage> {
     return SplashScreen(
       backgroundColor: ColorCustom.colorPrimary,
 
-      seconds: 2,
+      seconds: 1,
       useLoader: true,
-      loaderColor: ColorCustom.darkBlue,
+      loaderColor: Colors.white,
       title: const Text(
-        'QR Scan',
-        style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white),
+        'QR\nScan',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.white),
       ),
       navigateAfterSeconds: MyHomePage(),
     );

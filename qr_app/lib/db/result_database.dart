@@ -85,4 +85,14 @@ CREATE TABLE $tableScans (
 
     db.close();
   }
+
+  deleteItem(int? id) async {
+    final db = await instance.database;
+    var data = await db.delete(
+      tableScans,
+      where: '${ScanFields.id} = ?',
+      whereArgs: [id],
+    );
+    return data;
+  }
 }

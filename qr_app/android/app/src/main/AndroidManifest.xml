@@ -11,7 +11,7 @@
 
 
    <application
-        android:label="qr_app"
+        android:label="QR Scan"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
