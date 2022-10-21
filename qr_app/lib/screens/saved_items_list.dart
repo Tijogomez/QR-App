@@ -78,7 +78,11 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                         'Are you sure want to delete this entry ${data[index].result}',
                     negativePositiveMessage: 'Cancel',
                     positiveTap: () async {
-                      await ScansDatabase.instance.deleteItem(data[index].id);
+                      //     await ScansDatabase.instance.deleteItem(data[index].id);
+                      FirebaseDatabase.instance
+                          .ref(Constants.firebaseDbName)
+                          .child(data[index].fireBaseId ?? '')  
+                          .remove;
                       setState(() {});
                     },
                     positiveButtonMessage: 'Delete',
@@ -127,12 +131,14 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
     if (snapshot.exists) {
       var list = snapshot.children.map((e) {
         try {
-          return Scan.fromJson(jsonDecode(e.value.toString()));
+          var scan = Scan.fromJson(jsonDecode(e.value.toString()));
+          scan.fireBaseId = e.value as String;
+          return scan;
         } catch (e) {
           return Scan(result: "", createdTime: DateTime.now());
         }
       }).toList();
-      return list;
+      return list.reversed.toList();
     } else {
       return [];
     }

@@ -17,8 +17,9 @@ class Scan {
   final String result;
   final DateTime createdTime;
   final String? device;
+  String? fireBaseId=null;
 
-  const Scan({
+  Scan({
     this.id,
     required this.result,
     required this.createdTime,
