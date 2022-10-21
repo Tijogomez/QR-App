@@ -31,7 +31,7 @@ class SplashUIPage extends StatefulWidget {
 class _SplashUIPageState extends State<SplashUIPage> {
   @override
   void initState() {
-    navigateToSplash();
+       navigateToSplash();
     super.initState();
   }
 
@@ -42,38 +42,51 @@ class _SplashUIPageState extends State<SplashUIPage> {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: AnimatedTextKit(
-                totalRepeatCount: 1,
-                animatedTexts: [
-                  FadeAnimatedText('QR\nScan',
-                      textAlign: TextAlign.center,
-                      textStyle: const TextStyle(
-                          fontSize: 60,
-                          fontWeight: FontWeight.bold,
-                          color: ColorCustom.colorPrimary))
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: AnimatedTextKit(
+                    totalRepeatCount: 1,
+                    animatedTexts: [
+                      FadeAnimatedText('QR\nScan',
+                          textAlign: TextAlign.center,
+                          textStyle: const TextStyle(
+                              fontSize: 60,
+                              fontWeight: FontWeight.bold,
+                              color: ColorCustom.colorPrimary))
 
-                  // Text(
-                  //   'QR\nScan',
-                  //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
-                  //       fontSize: 60,
-                  //       fontWeight: FontWeight.bold,
-                  //       color: Colors.white),
-                  // ),
-                ],
-              ),
+                      // Text(
+                      //   'QR\nScan',
+                      //   textAlign: TextAlign.center,
+                      //   style: TextStyle(
+                      //       fontSize: 60,
+                      //       fontWeight: FontWeight.bold,
+                      //       color: Colors.white),
+                      // ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: ColorCustom.colorPrimary,
+                      strokeWidth: 5,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(
-            height: 200,
-            child: Center(
-              child: CircularProgressIndicator(
-                color: ColorCustom.colorPrimary,
-                strokeWidth: 5,
-              ),
+          Container(
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: 150,
+              height: 100,
+              fit: BoxFit.contain,
             ),
-          )
+          ),
         ],
       ),
     );

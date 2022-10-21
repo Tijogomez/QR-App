@@ -19,7 +19,7 @@ class Scan {
   final String result;
   final DateTime createdTime;
   final String? device;
-  DatabaseReference? fireBaseId;
+  DataSnapshot? fireBaseId;
 
   Scan({
     this.id,

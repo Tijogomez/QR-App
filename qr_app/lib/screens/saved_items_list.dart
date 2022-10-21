@@ -73,6 +73,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
           itemCount: data.length,
           itemBuilder: (context, index) {
             return GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onLongPress: () {
                 CustomWidget.showPermissionAlertDialog(
                     context: context,
@@ -90,17 +91,19 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                     },
                     positiveTap: () async {
                       //     await ScansDatabase.instance.deleteItem(data[index].id);
-                      FirebaseDatabase.instance
-                          .ref(Constants.firebaseDbName)
-                          .((data[index].fireBaseId) as)
-                          
-                          .remove;
+                      var dRef = data[index].fireBaseId?.ref;
+                      // FirebaseDatabase.instance
+                      //     .ref(Constants.firebaseDbName)
+
+                      //     .remove;
+                      var instance = FirebaseDatabase.instance;
+                      instance.ref(dRef?.path).set(null);
                       setState(() {});
                     },
                     positiveButtonMessage: 'Delete',
                     title: 'Delete');
               },
-              child: Padding(
+              child: Container(
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
                 child: Column(
                   children: [
@@ -119,7 +122,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: 5,
+                      height: 10,
                     ),
                     Row(
                       children: [
@@ -144,7 +147,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
       var list = snapshot.children.map((e) {
         try {
           var scan = Scan.fromJson(jsonDecode(e.value.toString()));
-          scan.fireBaseId = e.ref;
+          scan.fireBaseId = e;
           return scan;
         } catch (e) {
           return Scan(result: "", createdTime: DateTime.now());

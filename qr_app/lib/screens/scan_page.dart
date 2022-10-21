@@ -97,8 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Center(
           child: GestureDetector(
             onTap: () {
-              // _scanQR();
-              saveResult("sample text ${Random().nextInt(1000)}");
+               _scanQR();
             },
             child: Image.asset(
               'assets/images/qr_img.png',
