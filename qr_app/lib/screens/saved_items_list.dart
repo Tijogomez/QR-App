@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:qr_app/model/result.dart';
+import 'package:qr_app/screens/scan_page.dart';
 import 'package:qr_app/utils/constants_util.dart';
 import 'package:qr_app/utils/custom_themes.dart';
 import 'package:intl/intl.dart';
