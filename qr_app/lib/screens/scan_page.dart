@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 144, 28, 28),
         centerTitle: true,
         title: const Text(
           'Scan QR',
@@ -89,9 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         )),
         Container(
+          child: Image.asset(
+            'assets/images/logo.png',
+            width: 150,
+            height: 100,
+            fit: BoxFit.contain,
+          ),
+        ),
+        Container(
           height: 100,
           decoration: const BoxDecoration(
-            color: ColorCustom.darkBlue,
+            color: ColorCustom.inAppRed,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(30.0),
               topRight: Radius.circular(30.0),

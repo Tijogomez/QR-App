@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:qr_app/model/result.dart';
+import 'package:qr_app/screens/scan_page.dart';
 import 'package:qr_app/utils/custom_themes.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_app/utils/custom_widgets.dart';
@@ -20,6 +21,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
     return Scaffold(
       body: getListView(),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 144, 28, 28),
         centerTitle: true,
         title: const Text(
           'Saved List',
@@ -73,6 +75,15 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                     message:
                         'Are you sure want to delete this entry ${data[index].result}',
                     negativePositiveMessage: 'Cancel',
+                    negativeTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ScanResultScreen(),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    },
                     positiveTap: () async {
                       await ScansDatabase.instance.deleteItem(data[index].id);
                       setState(() {});
