@@ -33,7 +33,8 @@ class ScansDatabase {
 CREATE TABLE $tableScans ( 
   ${ScanFields.id} $idType,   
   ${ScanFields.result} $textType,  
-  ${ScanFields.time} $textType
+  ${ScanFields.time} $textType,
+  ${ScanFields.device} $textType
   )
 ''');
   }

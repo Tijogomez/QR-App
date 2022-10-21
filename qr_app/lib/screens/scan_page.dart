@@ -1,12 +1,19 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_app/db/result_database.dart';
 import 'package:qr_app/screens/saved_items_list.dart';
+import 'package:qr_app/utils/constants_util.dart';
 import 'package:qr_app/utils/custom_colors.dart';
 import 'package:qr_app/utils/custom_themes.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:flutter/services.dart';
 import 'package:qr_app/model/result.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -14,6 +21,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    Firebase.initializeApp();
+    super.initState();
+  }
+
   Future _scanQR() async {
     var cameraStatus = await Permission.camera.status;
     if (cameraStatus.isGranted) {
@@ -39,12 +52,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future saveResult(String? cameraScanResult) async {
     if (cameraScanResult != null && cameraScanResult.trim().isNotEmpty) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      var deviceName = androidInfo.model;
       final scan = Scan(
-        result: cameraScanResult,
-        createdTime: DateTime.now(),
-      );
+          result: cameraScanResult,
+          createdTime: DateTime.now(),
+          device: deviceName??'');
       var scaffoldMessenger = ScaffoldMessenger.of(context);
       await ScansDatabase.instance.insert(scan);
+
       scaffoldMessenger.showSnackBar(SnackBar(
         content: Text(
           'Scan Success - ${cameraScanResult} ',
@@ -53,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: ColorCustom.colorPrimary,
         duration: Duration(milliseconds: 2000),
       ));
+      await saveDataToFirebase(scan);
     }
   }
 
@@ -79,7 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Center(
           child: GestureDetector(
             onTap: () {
-              _scanQR();
+              // _scanQR();
+              saveResult("sample text ${Random().nextInt(1000)}");
             },
             child: Image.asset(
               'assets/images/qr_img.png',
@@ -139,8 +158,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
   }
+
+  saveDataToFirebase(Scan scan) async {
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref(Constants.firebaseDbName);
+    await ref.push().set(jsonEncode(scan));
+  }
 }
- // FutureBuilder(builder: ((context, snapshot) {
-          //   var data = snapshot.data as List<Scan> ;
-          //   return ListView.builder(itemCount: data.length ,itemBuilder: ((context, index) => Text(data[index].result)));
-          // }))

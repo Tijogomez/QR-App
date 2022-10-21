@@ -1,8 +1,11 @@
+import 'dart:convert';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:qr_app/model/result.dart';
-import 'package:qr_app/screens/scan_page.dart';
+import 'package:qr_app/utils/constants_util.dart';
 import 'package:qr_app/utils/custom_themes.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_app/utils/custom_widgets.dart';
@@ -93,19 +96,33 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                child: Row(
+                child: Column(
                   children: [
-                    Text('${index + 1}. ',
-                        style: CustomThemes.getNormalStyle(size: 16.0)),
-                    Text(
-                      '${DateFormat('MM/dd/yy hh:mm aa').format(data[index].createdTime)} - ',
-                      style: CustomThemes.getNormalStyle(size: 16.0),
+                    Row(
+                      children: [
+                        Text('${index + 1}. ',
+                            style: CustomThemes.getNormalStyle(size: 16.0)),
+                        Text(
+                          '${DateFormat('MM/dd/yy hh:mm aa').format(data[index].createdTime)} - ',
+                          style: CustomThemes.getNormalStyle(size: 16.0),
+                        ),
+                        Text(
+                          '${data[index].device}',
+                          style: CustomThemes.getNormalStyle(size: 16.0),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                        child: Text(
-                      '${data[index].result} ',
-                      style: CustomThemes.getBoldStyle(size: 16.0),
-                    )),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '${data[index].result} ',
+                          style: CustomThemes.getBoldStyle(size: 16.0),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -115,7 +132,19 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
   }
 
   Future<List<Scan>> getScanDataFromDb() async {
-    var resultData = await ScansDatabase.instance.readAllScans();
-    return resultData;
+    final ref = FirebaseDatabase.instance.ref(Constants.firebaseDbName);
+    final snapshot = await ref.get();
+    if (snapshot.exists) {
+      var list = snapshot.children.map((e) {
+        try {
+          return Scan.fromJson(jsonDecode(e.value.toString()));
+        } catch (e) {
+          return Scan(result: "", createdTime: DateTime.now());
+        }
+      }).toList();
+      return list;
+    } else {
+      return [];
+    }
   }
 }
