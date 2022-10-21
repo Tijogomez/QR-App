@@ -31,14 +31,14 @@ class SplashUIPage extends StatefulWidget {
 class _SplashUIPageState extends State<SplashUIPage> {
   @override
   void initState() {
-       navigateToSplash();
+    navigateToSplash();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorCustom.colorPrimary,
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
@@ -46,12 +46,12 @@ class _SplashUIPageState extends State<SplashUIPage> {
               child: AnimatedTextKit(
                 totalRepeatCount: 1,
                 animatedTexts: [
-                  TyperAnimatedText('QR\nScan',
+                  FadeAnimatedText('QR\nScan',
                       textAlign: TextAlign.center,
                       textStyle: const TextStyle(
                           fontSize: 60,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white))
+                          color: ColorCustom.colorPrimary))
 
                   // Text(
                   //   'QR\nScan',
@@ -65,11 +65,11 @@ class _SplashUIPageState extends State<SplashUIPage> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 200,
             child: Center(
               child: CircularProgressIndicator(
-                color: Colors.white,
+                color: ColorCustom.colorPrimary,
                 strokeWidth: 5,
               ),
             ),
@@ -95,7 +95,7 @@ class _SplashUIPageState extends State<SplashUIPage> {
   void navigateToSplash() {
     Future.delayed(
         const Duration(
-          seconds: 1,
+          milliseconds: 1500,
         ), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(

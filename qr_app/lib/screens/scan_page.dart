@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'Scan Success - ${cameraScanResult} ',
           style: CustomThemes.getNormalStyle(size: 20.0),
         ),
-        backgroundColor: ColorCustom.colorPrimary,
+        backgroundColor: Colors.white,
         duration: Duration(milliseconds: 2000),
       ));
       await saveDataToFirebase(scan);

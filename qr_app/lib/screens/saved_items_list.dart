@@ -92,7 +92,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                       //     await ScansDatabase.instance.deleteItem(data[index].id);
                       FirebaseDatabase.instance
                           .ref(Constants.firebaseDbName)
-                          .child(data[index].fireBaseId ?? '')  
+                          .((data[index].fireBaseId) as)
+                          
                           .remove;
                       setState(() {});
                     },
@@ -143,7 +144,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
       var list = snapshot.children.map((e) {
         try {
           var scan = Scan.fromJson(jsonDecode(e.value.toString()));
-          scan.fireBaseId = e.value as String;
+          scan.fireBaseId = e.ref;
           return scan;
         } catch (e) {
           return Scan(result: "", createdTime: DateTime.now());

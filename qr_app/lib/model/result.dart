@@ -1,3 +1,5 @@
+import 'package:firebase_database/firebase_database.dart';
+
 final String tableScans = 'scans';
 
 class ScanFields {
@@ -17,7 +19,7 @@ class Scan {
   final String result;
   final DateTime createdTime;
   final String? device;
-  String? fireBaseId=null;
+  DatabaseReference? fireBaseId;
 
   Scan({
     this.id,
