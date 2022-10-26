@@ -54,11 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
     if (cameraScanResult != null && cameraScanResult.trim().isNotEmpty) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      var deviceName = androidInfo.model;
+      var deviceName = '${androidInfo.brand ?? ""} ${androidInfo.model}';
       final scan = Scan(
           result: cameraScanResult,
           createdTime: DateTime.now(),
-          device: deviceName??'');
+          device: deviceName ?? '');
       var scaffoldMessenger = ScaffoldMessenger.of(context);
       await ScansDatabase.instance.insert(scan);
 
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Color.fromARGB(255, 144, 28, 28),
         centerTitle: true,
         title: const Text(
-          'Scan QR',
+          'QR Scan',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Center(
           child: GestureDetector(
             onTap: () {
-               _scanQR();
+              _scanQR();
             },
             child: Image.asset(
               'assets/images/qr_img.png',
